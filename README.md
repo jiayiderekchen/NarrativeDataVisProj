@@ -1,2 +1,2 @@
-# jiayiderekchen.github.io
-DataVisProject
+# NarrativeVisualizationProject
+
