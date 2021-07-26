@@ -1,20 +1,47 @@
-<head>
-    <!-- This will show up on the tab in your browser -->
-    <title>My Portfolio</title>
+<!DOCTYPE html>
+<meta charset="utf-8">
+<style>
 
-    <!-- This links your css file to the html -->
-    <link rel="stylesheet" type="text/css" href="index.css">
-</head>
+.states {
+  fill: none;
+  stroke: #fff;
+  stroke-linejoin: round;
+}
 
+</style>
 <body>
-    <!-- This is the start of the "About" section -->
-    <div class="about">
-        <h1>About</h1>
-        <p>Welcome to my portfolio</p>
-    </div>
+<script src="//d3js.org/d3.v3.min.js"></script>
+<script src="//d3js.org/topojson.v1.min.js"></script>
+<script>
 
-    <!-- This is the start of the projects section -->
-    <div class="projects">
-        <h1>Projects</h1>
-    </div>
-</body>
+var width = 960,
+    height = 500;
+
+var fill = d3.scale.log()
+    .domain([10, 500])
+    .range(["brown", "steelblue"]);
+
+var path = d3.geo.path();
+
+var svg = d3.select("body").append("svg")
+    .attr("width", width)
+    .attr("height", height);
+
+d3.json("/mbostock/raw/4090846/us.json", function(error, us) {
+  if (error) throw error;
+
+  svg.append("g")
+      .attr("class", "counties")
+    .selectAll("path")
+      .data(topojson.feature(us, us.objects.counties).features)
+    .enter().append("path")
+      .attr("d", path)
+      .style("fill", function(d) { return fill(path.area(d)); });
+
+  svg.append("path")
+      .datum(topojson.mesh(us, us.objects.states, function(a, b) { return a.id !== b.id; }))
+      .attr("class", "states")
+      .attr("d", path);
+});
+
+</script>
