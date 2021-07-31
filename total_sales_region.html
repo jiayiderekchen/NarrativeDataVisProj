@@ -1,0 +1,293 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <style>
+    html {
+      font-family: 'Arial', sans-serif;
+    }
+    .header {
+      margin-top: 60px;
+      margin-left: 60px;
+      text-align: left;
+      color: white;
+    }
+    input {
+      margin-right: 10px;
+    }
+    .form-check-label {
+      font-size: 0.8em;
+      margin-right: 20px;
+    }
+
+  .image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("test.jpg");
+  height: auto;
+  width: auto;
+  background-position: center;
+  background-repeat: repeat;
+  background-size: cover;
+  position: relative;
+}
+  </style>
+</head>
+<body>
+  <div class="image">
+  <div class ='container-fluid'>
+    <div class='row'>
+      <div id="chart">
+        <div class='header'>
+          <h1>
+          <br><br>Video Game Sales analysis from 2010-2017<br></h1>
+          <br>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+<!-- Initialize a select button -->
+<p><br></p>
+<select id="selectButton"></select>
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<div class ='container-fluid'>
+  <div class='row'>
+    <div id="chart">
+      
+        <p style="margin-left: 60px">From the multiple line chart, we are able to study the brief history of global video games sales trend.<br>
+           From 1980 to 1985, all regions still maintain relatively low sales of video games. Starting from 1995, <br>as major video game platform such as PS2, XBOX begin to thrive,
+            the sales of video games experienced <br>a boom globally. After the peak in 2009, video games sales back to normal until the end point of our dataset (2017). <br> </p>
+
+            <p style="margin-left: 60px">
+              Among all the region, North America lead the trend in total sales of video games by region, then we have European Union,<br> then Japan, 
+              finally, rest of the world. This proves that North America, Europe and Japan are three engines that move <br>the video game industry forward. 
+            </p>
+
+            <p style="margin-left: 60px">In this website, NA is short for North America, EU is short for European Union, JP is short for Japan.
+               Others means other<br> areas apart from North America, European Union and Japan. Global means all regions altogether. </p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Color Scale -->
+<script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 50, right: 60, bottom: 80, left: 120},
+    width = 900 - margin.left - margin.right,
+    height = 400 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+
+
+//Read the data
+d3.csv("year_release.csv",function(data) {
+
+  var allGroup = ["NA","EU","JP","Others"]
+
+    // add the options to the button
+    d3.select("#selectButton")
+      .selectAll('myOptions')
+     	.data(allGroup)
+      .enter()
+    	.append('option')
+      .text(function (d) { return d; }) // text showed in the menu
+      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+
+      var myColor = d3.scaleOrdinal()
+      .domain(allGroup)
+      .range(d3.schemeSet2);
+
+
+// Handmade legend
+svg.append("circle").attr("cx",350).attr("cy",0).attr("r", 6).style("fill", function(d){ return myColor("NA") })
+svg.append("circle").attr("cx",350).attr("cy",20).attr("r", 6).style("fill", function(d){ return myColor("EU") })
+svg.append("circle").attr("cx",350).attr("cy",40).attr("r", 6).style("fill", function(d){ return myColor("JP") })
+svg.append("circle").attr("cx",350).attr("cy",60).attr("r", 6).style("fill", function(d){ return myColor("Others") })
+svg.append("text").attr("x", 370).attr("y", 0).text("North America").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 370).attr("y", 20).text("European Union").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 370).attr("y", 40).text("Japan").style("font-size", "15px").attr("alignment-baseline","middle")
+svg.append("text").attr("x", 370).attr("y", 60).text("Others").style("font-size", "15px").attr("alignment-baseline","middle")
+
+
+  // Add X axis --> it is a date format
+  var x = d3.scaleLinear()
+    .domain([1980,2017])
+    .range([ 0, width ]);
+  svg.append("g")
+    .attr("transform", "translate(0," + height + ")")
+    .call(d3.axisBottom(x));
+
+  svg.append("text")
+  .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (height + margin.top + 0) + ")")
+  .style("text-anchor", "middle")
+  .text("year (1980-2017)");
+
+  // Add Y axis
+  var y = d3.scaleLinear()
+    .domain([0, 400])
+    .range([ height, 0 ]);
+  svg.append("g")
+    .call(d3.axisLeft(y));
+
+    svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 50 - margin.left)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Total Sales by Region (millions)")
+
+  // This allows to find the closest X index of the mouse:
+  var bisect = d3.bisector(function(d) { return d.Year_of_Release; }).left;
+
+
+  // Add the line
+  var line = svg
+      .append('g')
+      .append("path")
+        .datum(data)
+        .attr("d", d3.line()
+          .x(function(d) { return x(+d.Year_of_Release) })
+          .y(function(d) { return y(+d.NA) })
+        )
+        .attr("stroke", function(d){ return myColor("NA") })
+        .style("stroke-width", 4)
+        .style("fill", "none")
+var line2 = 
+ svg
+  .append('g')
+      .append("path")
+        .datum(data)
+        .attr("d", d3.line()
+          .x(function(d) { return x(+d.Year_of_Release) })
+          .y(function(d) { return y(+d.EU) })
+        )
+        .attr("stroke", function(d){ return myColor("EU") })
+        .style("stroke-width", 4)
+        .style("fill", "none")
+var line3 = 
+  svg
+  .append('g')
+      .append("path")
+        .datum(data)
+        .attr("d", d3.line()
+          .x(function(d) { return x(+d.Year_of_Release) })
+          .y(function(d) { return y(+d.JP) })
+        )
+        .attr("stroke", function(d){ return myColor("JP") })
+        .style("stroke-width", 4)
+        .style("fill", "none")
+var line4 = 
+  svg
+  .append('g')
+      .append("path")
+        .datum(data)
+        .attr("d", d3.line()
+          .x(function(d) { return x(+d.Year_of_Release) })
+          .y(function(d) { return y(+d.Others) })
+        )
+        .attr("stroke", function(d){ return myColor("Others") })
+        .style("stroke-width", 4)
+        .style("fill", "none")
+
+
+    // A function that update the chart
+function update(selectedGroup) {
+
+// Create new data with the selection?
+var dataFilter = data.map(function(d){return {time: d.Year_of_Release, value:d[selectedGroup]} })
+
+// Give these new data to update line
+line
+    .datum(dataFilter)
+    .transition()
+    .duration(1000)
+    .attr("d", d3.line()
+      .x(function(d) { return x(+d.time) })
+      .y(function(d) { return y(+d.value) })
+    )
+    .attr("stroke", function(d){ return myColor(selectedGroup) })
+
+    line2
+    .datum(dataFilter)
+    .transition()
+    .duration(1000)
+    .attr("d", d3.line()
+      .x(function(d) { return x(+d.time) })
+      .y(function(d) { return y(+d.value) })
+    )
+    .attr("stroke", function(d){ return myColor(selectedGroup) })
+
+  
+    line3
+    .datum(dataFilter)
+    .transition()
+    .duration(1000)
+    .attr("d", d3.line()
+      .x(function(d) { return x(+d.time) })
+      .y(function(d) { return y(+d.value) })
+    )
+    .attr("stroke", function(d){ return myColor(selectedGroup) })
+
+    line4
+    .datum(dataFilter)
+    .transition()
+    .duration(1000)
+    .attr("d", d3.line()
+      .x(function(d) { return x(+d.time) })
+      .y(function(d) { return y(+d.value) })
+    )
+    .attr("stroke", function(d){ return myColor(selectedGroup) })
+
+
+}
+
+// When the button is changed, run the updateChart function
+d3.select("#selectButton").on("change", function(d) {
+  // recover the option that has been chosen
+  var selectedOption = d3.select(this).property("value")
+  // run the updateChart function with this selected option
+  update(selectedOption)
+
+})
+
+})
+
+</script>
+
+<body>
+  <br>Click Next to see total sales by genre<br>
+       <a href="total_sales_genre.html" class="next">Next &raquo;</a><br>
+<body>
+
+  
+ 
