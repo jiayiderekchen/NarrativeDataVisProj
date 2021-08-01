@@ -1,0 +1,177 @@
+<!-- Code from d3-graph-gallery.com -->
+<!DOCTYPE html>
+<meta charset="utf-8">
+
+<!-- Load d3.js -->
+<script src="https://d3js.org/d3.v4.js"></script>
+
+<head>
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+  <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+  <style>
+    html {
+      font-family: 'Arial', sans-serif;
+    }
+    .header {
+      margin-top: 60px;
+      margin-left: 60px;
+      text-align: left;
+      color: white;
+    }
+    input {
+      margin-right: 10px;
+    }
+    .form-check-label {
+      font-size: 0.8em;
+      margin-right: 20px;
+    }
+  
+  .image {
+  background-image: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url("test.jpg");
+  height: auto;
+  width: auto;
+  background-position: center;
+  background-repeat: repeat;
+  background-size: cover;
+  position: relative;
+}
+  </style>
+</head>
+<body>
+  <div class="image">
+  <div class ='container-fluid'>
+    <div class='row'>
+      <div id="chart">
+        <div class='header'>
+          <h1><br><br>Video Game Sales analysis from 2010-2017<br></h1>
+          <br>
+          </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div> 
+
+<!-- Add 5 buttons -->
+<p><br></p>
+<button onclick="update('Nintendo')">Nintendo</button>
+<button onclick="update('Electronic Arts')">Electronic Arts</button>
+<button onclick="update('Activision')">Activision</button>
+<button onclick="update('Sony Computer Entertainment')">Sony Computer Entertainment</button>
+<button onclick="update('Ubisoft')">Ubisoft</button>
+
+
+<!-- Create a div where the graph will take place -->
+<div id="my_dataviz"></div>
+
+<div class ='container-fluid'>
+  <div class='row'>
+    <div id="chart">
+        <p style="margin-left: 60px">
+          We all know some of the famous Video Game developers/publishers: Nintendo, Sony Entertainment,<br>
+           Ubisoft, CD project red…Now let’s see how their performances are in terms of region/global sales. Nintendo,<br>
+            as a Japan gaming giant, is number one market leader without doubt. Globally Nintendo takes over $1600 <br>
+             millions of total sales from 2010 to 2017. Surprisingly, as a Japanese publisher, its total sales in North America<br>
+              is actually more than in Japan, which proves its global visions when developing games. Electronic Arts takes the <br>
+               second place by taking over $1100 millions globally. Then we have Activision, Sony Computer Entertainment <br>
+               and Ubisoft comes after, as 3rd to 5th places. 
+         </p>
+        </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+
+// set the dimensions and margins of the graph
+var margin = {top: 30, right: 30, bottom: 70, left: 120},
+    width = 600 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+// append the svg object to the body of the page
+var svg = d3.select("#my_dataviz")
+  .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+  .append("g")
+    .attr("transform",
+          "translate(" + margin.left + "," + margin.top + ")");
+
+// Initialize the X axis
+var x = d3.scaleBand()
+  .range([ 0, width ])
+  .padding(0.2);
+var xAxis = svg.append("g")
+  .attr("transform", "translate(0," + height + ")")
+
+// Initialize the Y axis
+var y = d3.scaleLinear()
+  .range([ height, 0]);
+var yAxis = svg.append("g")
+  .attr("class", "myYaxis")
+
+
+// A function that create / update the plot for a given variable:
+function update(selectedVar) {
+
+  // Parse the Data
+  d3.csv("total_sales_publisher_1.csv", function(data) {
+
+    // X axis
+    x.domain(data.map(function(d) { return d.Publisher; }))
+    xAxis.transition().duration(1000).call(d3.axisBottom(x))
+
+  svg.append("text")
+  .attr("transform",
+            "translate(" + (width/2) + " ," +
+                           (height + margin.top + 10) + ")")
+  .style("text-anchor", "middle")
+  .text("Region");
+
+    // Add Y axis
+    y.domain([0, d3.max(data, function(d) { return +d[selectedVar] }) ]);
+    yAxis.transition().duration(1000).call(d3.axisLeft(y));
+
+    svg.append("text")
+    .attr("transform", "rotate(-90)")
+    .attr("y", 50 - margin.left)
+    .attr("x",0 - (height / 2))
+    .attr("dy", "1em")
+    .style("text-anchor", "middle")
+    .text("Total Sales (millions) by major publishers")
+
+    // variable u: map data to existing bars
+    var u = svg.selectAll("rect")
+      .data(data)
+
+    // update bars
+    u
+      .enter()
+      .append("rect")
+      .merge(u)
+      .transition()
+      .duration(800)
+      .attr("x", function(d) { return x(d.Publisher); })
+        .attr("y", function(d) { return y(d[selectedVar]); })
+        .attr("width", x.bandwidth())
+        .attr("height", function(d) { return height - y(d[selectedVar]); })
+        .delay(function(d,i){console.log(i) ; return(i*100)})
+        .attr("fill", "#34c4d1")
+  })
+
+}
+
+// Initialize plot
+update('Nintendo')
+
+</script>
+
+<body>
+  <br>Click Back to first page to return home<br>
+       <a href="index.html" class="next">Back to first page &raquo;</a><br>
+<body>
