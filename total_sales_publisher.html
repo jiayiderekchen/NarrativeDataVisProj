@@ -72,7 +72,7 @@
     <div id="chart">
         <p style="margin-left: 60px">
           We all know some of the famous Video Game developers/publishers: Nintendo, Sony Entertainment,<br>
-           Ubisoft, CD project red…Now let’s see how their performances are interns of region/global sales. Nintendo,<br>
+           Ubisoft, CD project red…Now let’s see how their performances are interms of region/global sales. Nintendo,<br>
             as a Japan gaming giant, is number one market leader without doubt. Globally Nintendo takes over $1600 <br>
              millions of total sales from 2010 to 2017. Surprisingly, as a Japanese publisher, its total sales in North America<br>
               is actually more than in Japan, which proves its global visions when developing games. Electronic Arts takes the <br>
@@ -120,7 +120,7 @@ var yAxis = svg.append("g")
 function update(selectedVar) {
 
   // Parse the Data
-  d3.csv("total_sales_publisher.csv", function(data) {
+  d3.csv("total_sales_publisher_1.csv", function(data) {
 
     // X axis
     x.domain(data.map(function(d) { return d.Publisher; }))
