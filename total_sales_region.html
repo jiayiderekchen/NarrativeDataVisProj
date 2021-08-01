@@ -1,8 +1,6 @@
-<!-- Code from d3-graph-gallery.com -->
 <!DOCTYPE html>
 <meta charset="utf-8">
 
-<!-- Load d3.js -->
 <script src="https://d3js.org/d3.v4.js"></script>
 
 <head>
@@ -56,11 +54,9 @@
     </div>
   </div> 
 
-<!-- Initialize a select button -->
 <p><br></p>
 <select id="selectButton"></select>
 
-<!-- Create a div where the graph will take place -->
 <div id="my_dataviz"></div>
 
 <div class ='container-fluid'>
@@ -68,7 +64,7 @@
     <div id="chart">
       
         <p style="margin-left: 60px">From the multiple line chart, we are able to study the brief history of global video games sales trend.<br>
-           From 1980 to 1985, all regions still maintain relatively low sales of video games. Starting from 1995, <br>as major video game platform such as PS2, XBOX begin to thrive,
+           From 1980 to 1985, all regions still maintain relatively low sales of video games. Starting from 1995, <br>as major video game platforms such as PS2 and XBOX begin to thrive,
             the sales of video games experienced <br>a boom globally. After the peak in 2009, video games sales back to normal until the end point of our dataset (2017). <br> </p>
 
             <p style="margin-left: 60px">
@@ -85,17 +81,14 @@
   </div>
 </div>
 
-<!-- Color Scale -->
 <script src="https://d3js.org/d3-scale-chromatic.v1.min.js"></script>
 
 <script>
 
-// set the dimensions and margins of the graph
 var margin = {top: 50, right: 60, bottom: 80, left: 120},
     width = 900 - margin.left - margin.right,
     height = 400 - margin.top - margin.bottom;
 
-// append the svg object to the body of the page
 var svg = d3.select("#my_dataviz")
   .append("svg")
     .attr("width", width + margin.left + margin.right)
@@ -105,27 +98,24 @@ var svg = d3.select("#my_dataviz")
           "translate(" + margin.left + "," + margin.top + ")");
 
 
-
-//Read the data
 d3.csv("year_release.csv",function(data) {
 
   var allGroup = ["NA","EU","JP","Others"]
 
-    // add the options to the button
     d3.select("#selectButton")
       .selectAll('myOptions')
      	.data(allGroup)
       .enter()
     	.append('option')
-      .text(function (d) { return d; }) // text showed in the menu
-      .attr("value", function (d) { return d; }) // corresponding value returned by the button
+      .text(function (d) { return d; }) 
+      .attr("value", function (d) { return d; }) 
 
       var myColor = d3.scaleOrdinal()
       .domain(allGroup)
       .range(d3.schemeSet2);
 
 
-// Handmade legend
+//legend
 svg.append("circle").attr("cx",350).attr("cy",0).attr("r", 6).style("fill", function(d){ return myColor("NA") })
 svg.append("circle").attr("cx",350).attr("cy",20).attr("r", 6).style("fill", function(d){ return myColor("EU") })
 svg.append("circle").attr("cx",350).attr("cy",40).attr("r", 6).style("fill", function(d){ return myColor("JP") })
@@ -136,7 +126,7 @@ svg.append("text").attr("x", 370).attr("y", 40).text("Japan").style("font-size",
 svg.append("text").attr("x", 370).attr("y", 60).text("Others").style("font-size", "15px").attr("alignment-baseline","middle")
 
 
-  // Add X axis --> it is a date format
+  // Add X axis 
   var x = d3.scaleLinear()
     .domain([1980,2017])
     .range([ 0, width ]);
@@ -166,11 +156,8 @@ svg.append("text").attr("x", 370).attr("y", 60).text("Others").style("font-size"
     .style("text-anchor", "middle")
     .text("Total Sales by Region (millions)")
 
-  // This allows to find the closest X index of the mouse:
   var bisect = d3.bisector(function(d) { return d.Year_of_Release; }).left;
 
-
-  // Add the line
   var line = svg
       .append('g')
       .append("path")
@@ -220,13 +207,10 @@ var line4 =
         .style("fill", "none")
 
 
-    // A function that update the chart
 function update(selectedGroup) {
 
-// Create new data with the selection?
 var dataFilter = data.map(function(d){return {time: d.Year_of_Release, value:d[selectedGroup]} })
 
-// Give these new data to update line
 line
     .datum(dataFilter)
     .transition()
@@ -271,13 +255,9 @@ line
 
 }
 
-// When the button is changed, run the updateChart function
 d3.select("#selectButton").on("change", function(d) {
-  // recover the option that has been chosen
   var selectedOption = d3.select(this).property("value")
-  // run the updateChart function with this selected option
   update(selectedOption)
-
 })
 
 })
